@@ -1,0 +1,20 @@
+{
+  "name": "@ndml/core",
+  "version": "1.0.0",
+  "description": "Nodium Minecraft Launcher Core",
+  "main": "src/index.ts",
+  "author": "LIMPIX31",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.7.1",
+    "prettier-eslint": "^15.0.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "rxjs": "^7.5.5"
+  }
+}
