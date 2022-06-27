@@ -5,7 +5,21 @@
   "main": "src/index.ts",
   "author": "LIMPIX31",
   "license": "MIT",
+  "files": [
+    "lib/**/*"
+  ],
+  "exports": {
+    "./api": "./lib/exports/api.exports.js"
+  },
+  "typesVersions": {
+    "*": {
+      "api": [
+        "lib/exports/api.exports.d.ts"
+      ]
+    }
+  },
   "devDependencies": {
+    "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "eslint": "^8.18.0",
@@ -16,11 +30,13 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "arch": "^2.2.0",
     "axios": "^0.27.2",
     "fast-xml-parser": "^4.0.8",
     "rxjs": "^7.5.5"
   },
   "scripts": {
+    "build": "tsc",
     "test": "jest"
   }
 }
