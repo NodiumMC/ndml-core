@@ -1,11 +1,12 @@
 import * as osutils from '../utils/os'
 import { OSType, Rule as RuleType } from '../version/version'
-import { Rule } from '../version/Rule'
+import { Rule, Rules } from '../version/Rule'
+import exp from 'constants'
 
 describe('Version Rule', () => {
   const mockVersion = (version: string) => {
     jest.mock('os', () => ({
-      release: version
+      release: version,
     }))
   }
   it('Should parse rule for windows 10', () => {
@@ -15,9 +16,9 @@ describe('Version Rule', () => {
     const rule: RuleType = {
       action: 'allow',
       os: {
-        name: 'windows'
+        name: 'windows',
       },
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(true)
@@ -31,9 +32,9 @@ describe('Version Rule', () => {
     const rule: RuleType = {
       action: 'allow',
       os: {
-        name: 'linux'
+        name: 'linux',
       },
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(false)
@@ -48,9 +49,9 @@ describe('Version Rule', () => {
       action: 'allow',
       os: {
         name: 'linux',
-        arch: 'x64'
+        arch: 'x64',
       },
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(false)
@@ -66,7 +67,7 @@ describe('Version Rule', () => {
       os: {
         name: 'windows',
       },
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(false)
@@ -81,9 +82,9 @@ describe('Version Rule', () => {
       action: 'allow',
       os: {
         name: 'windows',
-        version: '10.0.11111'
+        version: '10.0.11111',
       },
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(false)
@@ -93,10 +94,42 @@ describe('Version Rule', () => {
   it('Should allow without os parameter', () => {
     const rule: RuleType = {
       action: 'allow',
-      value: ['example']
+      value: ['example'],
     }
     const result = Rule(rule)
     expect(result.allow).toBe(true)
     expect(result.reasons).toHaveLength(0)
+  })
+
+  it('Should allow multi rules', () => {
+    const rules: RuleType[] = [{
+      action: 'allow',
+      value: ['v1'],
+    }, {
+      action: 'allow',
+      value: ['v2'],
+    }]
+    const rulesResult = Rules(rules)
+    expect(rulesResult.allow).toBe(true)
+    expect(rulesResult.reasons).toHaveLength(0)
+    expect(rulesResult.values).toHaveLength(2)
+    expect(rulesResult.values?.[0]).toBe('v1')
+    expect(rulesResult.values?.[1]).toBe('v2')
+  })
+
+  it('Should disallow multi rules', () => {
+    const rules: RuleType[] = [{
+      action: 'allow',
+      value: ['v1'],
+    }, {
+      action: 'disallow',
+      value: ['v2'],
+    }]
+    const rulesResult = Rules(rules)
+    expect(rulesResult.allow).toBe(false)
+    expect(rulesResult.reasons).toHaveLength(0)
+    expect(rulesResult.values).toHaveLength(2)
+    expect(rulesResult.values?.[0]).toBe('v1')
+    expect(rulesResult.values?.[1]).toBe('v2')
   })
 })
