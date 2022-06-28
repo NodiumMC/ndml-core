@@ -69,8 +69,10 @@ export const batchDownload = (resources: DownloadableResource[], _retries = 0): 
 export const downloadAndExtract = (resources: DownloadableResource[]): Observable<DownloadResult> =>
   batchDownload(resources)
     .pipe(map(res => {
+      if(!res.local) return res
       try {
-        new Zip(res.local).extractAllTo(path.dirname(res.local ?? '/'), true)
+        new Zip(res.local).extractAllTo(path.dirname(res.local), true)
+        fsx.unlinkSync(res.local)
       } catch (e) {}
       return res
     }))
