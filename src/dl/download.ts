@@ -54,3 +54,12 @@ export const download = async (resource: DownloadableResource): Promise<Download
     return { error: e.message }
   }
 }
+
+export const batchDownload = (resources: DownloadableResource[], _retries = 0): Observable<DownloadResult> =>
+  new Observable<DownloadResult>(subscribe => {
+    const failed: DownloadableResource[] = []
+    if(_retries > 10) return subscribe.error(new Error('Too many retries. Please check your network'))
+    Promise.all(resources.map(r =>
+      download(r).then(res => res.error ? failed.push(r) : subscribe.next(res))))
+      .then(() => failed.length > 0 ? batchDownload(failed, _retries + 1).subscribe(subscribe) : subscribe.complete())
+  })
